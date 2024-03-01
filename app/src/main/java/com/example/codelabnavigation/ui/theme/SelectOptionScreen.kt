@@ -71,15 +71,7 @@ fun SelectOptionScreen(
                 thickness = dimensionResource(R.dimen.thickness_divider),
                 modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_medium))
             )
-            FormattedPriceLabel(
-                subtotal = subtotal,
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(
-                        top = dimensionResource(R.dimen.padding_medium),
-                        bottom = dimensionResource(R.dimen.padding_medium)
-                    )
-            )
+
         }
         Row(
             modifier = Modifier
