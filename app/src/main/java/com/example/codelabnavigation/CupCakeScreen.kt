@@ -1,5 +1,7 @@
 package com.example.codelabnavigation
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -30,6 +32,8 @@ import com.example.codelabnavigation.data.DataSource
 import com.example.codelabnavigation.ui.theme.OrderViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.codelabnavigation.ui.theme.OrderSummaryScreen
+import com.example.codelabnavigation.ui.theme.SelectOptionScreen
 
 enum class CupCakeScreen(val title : Int){
     Start(title = R.string.app_name),
@@ -100,7 +104,7 @@ fun CupCakeApp(
                 StartOrderScreen(
                     quantityOptions = DataSource.quantityOptions,
                     onNextButtonClicked = {
-                        viewModel.setQuantity(it)
+                        cupcakeQuantity -> viewModel.setQuantity(cupcakeQuantity)
                         navController.navigate(CupCakeScreen.Flavor.name)
                     },
                     modifier = Modifier
@@ -108,6 +112,80 @@ fun CupCakeApp(
                         .padding(dimensionResource(R.dimen.padding_medium))
                 )
             }
+            composable(route = CupCakeScreen.Flavor.name) {
+                val context = LocalContext.current
+                SelectOptionScreen(
+                    modifier = Modifier.fillMaxHeight(),
+                    radioButtonList = DataSource.flavors.map { id -> context.resources.getString(id) },
+                    currentPrice = uiState.price,
+                    onSelectionChanged = { newFlavor ->
+                        viewModel.setFlavor(newFlavor)
+                    },
+                    onCancelButtonClicked = {
+                        cancelOrderAndNavigateToStart(viewModel, navController)
+                    },
+                    onNavigateNext = {
+                        navController.navigate(CupCakeScreen.Pickup.name)
+                    }
+                )
+            }
+            composable(route = CupCakeScreen.Pickup.name) {
+                SelectOptionScreen(
+                    modifier = Modifier.fillMaxHeight(),
+                    radioButtonList = uiState.pickupOptions,
+                    currentPrice = uiState.price,
+                    onSelectionChanged = { newDate ->
+                        viewModel.setDate(newDate)
+                    },
+                    onCancelButtonClicked = {
+                        cancelOrderAndNavigateToStart(viewModel, navController)
+                    },
+                    onNavigateNext = {
+                        navController.navigate(CupCakeScreen.Summary.name)
+                    }
+                )
+            }
+            composable(route = CupCakeScreen.Summary.name) {
+                val context = LocalContext.current
+                OrderSummaryScreen(
+                    orderUiState = uiState,
+                    onCancelButtonClicked = {
+                        cancelOrderAndNavigateToStart(viewModel, navController)
+                    },
+                    onSendButtonClicked = { subject: String, summary: String ->
+                        shareOrder(context, subject = subject, summary = summary)
+                    },
+                    modifier = Modifier.fillMaxHeight()
+                )
+            }
         }
     }
 }
+/**
+ * Resets the [OrderUiState] and pops up to [CupcakeScreen.Start]
+ */
+private fun cancelOrderAndNavigateToStart(
+    viewModel: OrderViewModel,
+    navController: NavHostController
+) {
+    viewModel.resetOrder()
+    navController.popBackStack(CupCakeScreen.Start.name, inclusive = false)
+}
+/**
+ * Creates an intent to share order details
+ */
+private fun shareOrder(context: Context, subject: String, summary: String) {
+    // Create an ACTION_SEND implicit intent with order details in the intent extras
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_SUBJECT, subject)
+        putExtra(Intent.EXTRA_TEXT, summary)
+    }
+    context.startActivity(
+        Intent.createChooser(
+            intent,
+            context.getString(R.string.new_cupcake_order)
+        )
+    )
+}
+

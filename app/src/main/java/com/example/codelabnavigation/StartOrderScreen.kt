@@ -39,7 +39,7 @@ fun StartOrderScreen(
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
             Image(
-                painter = painterResource(R.drawable.images),
+                painter = painterResource(R.drawable.cupcakes),
                 contentDescription = null,
                 modifier = Modifier.width(300.dp)
             )

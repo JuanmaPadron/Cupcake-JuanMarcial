@@ -9,19 +9,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.codelabnavigation.R
 
 /**
@@ -32,47 +40,84 @@ import com.example.codelabnavigation.R
  */
 @Composable
 fun SelectOptionScreen(
-    subtotal: String,
-    options: List<String>,
+    modifier: Modifier = Modifier,
+    radioButtonList: List<String>,
+    currentPrice: String,
     onSelectionChanged: (String) -> Unit = {},
     onCancelButtonClicked: () -> Unit = {},
-    onNextButtonClicked: () -> Unit = {},
-    modifier: Modifier = Modifier
+    onNavigateNext: () -> Unit = {}
 ) {
-    var selectedValue by rememberSaveable { mutableStateOf("") }
+    var selectedOption by remember { mutableStateOf(radioButtonList[0]) }
+    var showError by remember { mutableStateOf(true) }
 
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))) {
-            options.forEach { item ->
+            radioButtonList.forEach { eachOption ->
                 Row(
                     modifier = Modifier.selectable(
-                        selected = selectedValue == item,
+                        selected = (selectedOption == eachOption),
                         onClick = {
-                            selectedValue = item
-                            onSelectionChanged(item)
+                            if (selectedOption.isBlank()) {
+                                showError = true
+                            } else {
+                                selectedOption = eachOption
+                                onSelectionChanged(selectedOption)
+                                showError = false
+                            }
                         }
                     ),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     RadioButton(
-                        selected = selectedValue == item,
+                        selected = (selectedOption == eachOption),
                         onClick = {
-                            selectedValue = item
-                            onSelectionChanged(item)
+                            if (selectedOption.isBlank()) {
+                                showError = true
+                            } else {
+                                selectedOption = eachOption
+                                onSelectionChanged(selectedOption)
+                                showError = false
+                            }
                         }
                     )
-                    Text(item)
+                    Text(text = eachOption)
                 }
             }
-            Divider(
-                thickness = dimensionResource(R.dimen.thickness_divider),
-                modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_medium))
-            )
-
         }
+        Divider(
+            thickness = dimensionResource(R.dimen.thickness_divider),
+            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_medium))
+        )
+        if (showError) {
+            Text(
+                text = "Debe seleccionar una opción primero",
+                modifier = Modifier.padding(
+                    top = dimensionResource(R.dimen.padding_small),
+                    bottom = dimensionResource(R.dimen.padding_medium)
+                ),
+                color = MaterialTheme.colorScheme.error,
+                fontWeight = FontWeight.Bold
+            )
+        } else {
+            Text(
+                text = "Has seleccionado: $selectedOption",
+                modifier = Modifier.padding(
+                    top = dimensionResource(R.dimen.padding_small),
+                    bottom = dimensionResource(R.dimen.padding_medium)
+                ),
+            )
+            Text(
+                text = "Precio: $currentPrice",
+                modifier = Modifier.padding(
+                    top = dimensionResource(R.dimen.padding_small),
+                    bottom = dimensionResource(R.dimen.padding_medium)
+                )
+            )
+        }
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -89,8 +134,8 @@ fun SelectOptionScreen(
             Button(
                 modifier = Modifier.weight(1f),
                 // the button is enabled when the user makes a selection
-                enabled = selectedValue.isNotEmpty(),
-                onClick = onNextButtonClicked
+                enabled = showError.not(),
+                onClick = onNavigateNext
             ) {
                 Text(stringResource(R.string.next))
             }
