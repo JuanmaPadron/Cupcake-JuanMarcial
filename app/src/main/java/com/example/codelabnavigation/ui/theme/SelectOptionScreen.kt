@@ -3,7 +3,6 @@ package com.example.codelabnavigation.ui.theme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
@@ -17,19 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.codelabnavigation.R
 
 /**
@@ -86,36 +78,36 @@ fun SelectOptionScreen(
                     Text(text = eachOption)
                 }
             }
-        }
-        Divider(
-            thickness = dimensionResource(R.dimen.thickness_divider),
-            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_medium))
-        )
-        if (showError) {
-            Text(
-                text = "Debe seleccionar una opción primero",
-                modifier = Modifier.padding(
-                    top = dimensionResource(R.dimen.padding_small),
-                    bottom = dimensionResource(R.dimen.padding_medium)
-                ),
-                color = MaterialTheme.colorScheme.error,
-                fontWeight = FontWeight.Bold
+            Divider(
+                thickness = dimensionResource(R.dimen.thickness_divider),
+                modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_medium))
             )
-        } else {
-            Text(
-                text = "Has seleccionado: $selectedOption",
-                modifier = Modifier.padding(
-                    top = dimensionResource(R.dimen.padding_small),
-                    bottom = dimensionResource(R.dimen.padding_medium)
-                ),
-            )
-            Text(
-                text = "Precio: $currentPrice",
-                modifier = Modifier.padding(
-                    top = dimensionResource(R.dimen.padding_small),
-                    bottom = dimensionResource(R.dimen.padding_medium)
+            if (showError) {
+                Text(
+                    text = "Debe seleccionar una opción primero",
+                    modifier = Modifier.padding(
+                        top = dimensionResource(R.dimen.padding_small),
+                        bottom = dimensionResource(R.dimen.padding_medium)
+                    ),
+                    color = MaterialTheme.colorScheme.error,
+                    fontWeight = FontWeight.Bold
                 )
-            )
+            } else {
+                Text(
+                    text = "Has seleccionado: $selectedOption",
+                    modifier = Modifier.padding(
+                        top = dimensionResource(R.dimen.padding_small),
+                        bottom = dimensionResource(R.dimen.padding_medium)
+                    ),
+                )
+                Text(
+                    text = "Precio: $currentPrice",
+                    modifier = Modifier.padding(
+                        top = dimensionResource(R.dimen.padding_small),
+                        bottom = dimensionResource(R.dimen.padding_medium)
+                    )
+                )
+            }
         }
 
         Row(

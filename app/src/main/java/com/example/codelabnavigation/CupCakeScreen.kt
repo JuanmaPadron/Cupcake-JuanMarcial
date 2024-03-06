@@ -32,8 +32,9 @@ import com.example.codelabnavigation.data.DataSource
 import com.example.codelabnavigation.ui.theme.OrderViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.codelabnavigation.ui.theme.OrderSummaryScreen
 import com.example.codelabnavigation.ui.theme.SelectOptionScreen
+import com.example.codelabnavigation.ui.theme.StartOrderScreen
+import com.example.codelabnavigation.ui.theme.SummaryScreen
 
 enum class CupCakeScreen(val title : Int){
     Start(title = R.string.app_name),
@@ -147,7 +148,7 @@ fun CupCakeApp(
             }
             composable(route = CupCakeScreen.Summary.name) {
                 val context = LocalContext.current
-                OrderSummaryScreen(
+                SummaryScreen(
                     orderUiState = uiState,
                     onCancelButtonClicked = {
                         cancelOrderAndNavigateToStart(viewModel, navController)

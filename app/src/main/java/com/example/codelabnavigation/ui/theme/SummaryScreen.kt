@@ -12,66 +12,26 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import com.example.codelabnavigation.R
 import com.example.codelabnavigation.data.OrderUiState
 
-@Composable
-fun SummaryScreen(modifier : Modifier){
-    Column() {
-        Text(text = "QUANTITY")
-        //Text(text = "${orderUiState.quantity}")
-        Spacer(modifier = modifier.height(dimensionResource(R.dimen.padding_small)))
-        Text(text = "FLAVOR")
-        Text(text = "Valor2")
-        Spacer(modifier = modifier.height(dimensionResource(R.dimen.padding_small)))
-        Text(text = "PICK UP DATE")
-        Text(text = "Valor3")
-        Spacer(modifier = modifier.height(dimensionResource(R.dimen.padding_small)))
-    }
-}
+
 /**
  * This composable expects [orderUiState] that represents the order state, [onCancelButtonClicked]
  * lambda that triggers canceling the order and passes the final order to [onSendButtonClicked]
  * lambda
  */
 @Composable
-fun OrderSummaryScreen(
+fun SummaryScreen(
     orderUiState: OrderUiState,
     onCancelButtonClicked: () -> Unit,
     onSendButtonClicked: (String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val resources = LocalContext.current.resources
 
-    val numberOfCupcakes = resources.getQuantityString(
-        R.plurals.cupcakes,
-        orderUiState.quantity,
-        orderUiState.quantity
-    )
-    //Load and format a string resource with the parameters.
-    val orderSummary = stringResource(
-        R.string.order_details,
-        numberOfCupcakes,
-        orderUiState.flavor,
-        orderUiState.date,
-        orderUiState.quantity
-    )
-    val newOrder = stringResource(R.string.new_cupcake_order)
-    //Create a list of order summary to display
-    val items = listOf(
-        // Summary line 1: display selected quantity
-        Pair(stringResource(R.string.quantity), numberOfCupcakes),
-        // Summary line 2: display selected flavor
-        Pair(stringResource(R.string.flavor), orderUiState.flavor),
-        // Summary line 3: display selected pickup date
-        Pair(stringResource(R.string.pickup_date), orderUiState.date)
-    )
 
     Column(
         modifier = modifier,
@@ -81,17 +41,18 @@ fun OrderSummaryScreen(
             modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small))
         ) {
-            items.forEach { item ->
-                Text(item.first.uppercase())
-                Text(text = item.second, fontWeight = FontWeight.Bold)
-                Divider(thickness = dimensionResource(R.dimen.thickness_divider))
+            Text(text = "QUANTITY")
+            Text(text = "${orderUiState.quantity}")
+            Divider(thickness = dimensionResource(id = R.dimen.thickness_divider))
+            Text(text = "FLAVOR")
+            Text(text = orderUiState.flavor)
+            Divider(thickness = dimensionResource(id = R.dimen.thickness_divider))
+            Text(text = "PICK UP DATE")
+            Text(text = "${orderUiState.pickupOptions}")
+            Divider(thickness = dimensionResource(id = R.dimen.thickness_divider))
+            Text(text = "TOTAL")
+            Text(text = orderUiState.price)
             }
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
-            FormattedPriceLabel(
-                subtotal = orderUiState.price,
-                modifier = Modifier.align(Alignment.End)
-            )
-        }
         Row(
             modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
         ) {
@@ -100,7 +61,8 @@ fun OrderSummaryScreen(
             ) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { onSendButtonClicked(newOrder, orderSummary) }
+                    onClick = { val summary = "Quantity: ${orderUiState.quantity} | Flavor: ${orderUiState.flavor} | PickupDate: ${orderUiState.date} | Total: ${orderUiState.price}"
+                        onSendButtonClicked("order #123456J", summary) }
                 ) {
                     Text(stringResource(R.string.send))
                 }
@@ -112,5 +74,7 @@ fun OrderSummaryScreen(
                 }
             }
         }
+        }
+
     }
-}
+
