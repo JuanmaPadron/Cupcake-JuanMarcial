@@ -1,4 +1,4 @@
-package com.example.codelabnavigation.ui.theme
+package com.example.codelabnavigation.screens.other
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image

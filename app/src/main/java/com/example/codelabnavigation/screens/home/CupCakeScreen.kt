@@ -1,4 +1,4 @@
-package com.example.codelabnavigation
+package com.example.codelabnavigation.screens.home
 
 import android.content.Context
 import android.content.Intent
@@ -32,9 +32,10 @@ import com.example.codelabnavigation.data.DataSource
 import com.example.codelabnavigation.ui.theme.OrderViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.codelabnavigation.ui.theme.SelectOptionScreen
-import com.example.codelabnavigation.ui.theme.StartOrderScreen
-import com.example.codelabnavigation.ui.theme.SummaryScreen
+import com.example.codelabnavigation.R
+import com.example.codelabnavigation.screens.other.SelectOptionScreen
+import com.example.codelabnavigation.screens.other.StartOrderScreen
+import com.example.codelabnavigation.screens.other.SummaryScreen
 
 enum class CupCakeScreen(val title : Int){
     Start(title = R.string.app_name),
